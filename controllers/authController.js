@@ -5,7 +5,6 @@ exports.verifyAndFetchUser = async (req, res) => {
     try {
       const { idToken } = req.body;
       
-      // Verify Firebase token
       const decodedToken = await admin.auth().verifyIdToken(idToken);
       const phoneNumber = decodedToken.phone_number;
   

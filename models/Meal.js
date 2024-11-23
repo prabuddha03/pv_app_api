@@ -13,7 +13,7 @@ const mealSchema = new mongoose.Schema({
     },
     mealCategory: {
         type: String,
-        enum: ['veg', 'non-veg', 'vegan', 'other'],
+        enum: ['veg', 'non-veg', 'vegan'],
         required: true
     },
     items:[{
