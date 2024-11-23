@@ -17,4 +17,6 @@ const eventDaySchema = new mongoose.Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model('EventDay', eventDaySchema);
+const EventDay = mongoose.model('EventDay', eventDaySchema);
+
+module.exports = EventDay;
