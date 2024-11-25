@@ -27,9 +27,14 @@ const mealSchema = new mongoose.Schema({
     },
     description: {
         type: String
+    },
+    isActive: {
+        type: Boolean,
+        default: true
     }
 }, {
     timestamps: true
 });
 
-module.exports = mongoose.model('Meal', mealSchema);
+const Meal = mongoose.model('Meal', mealSchema);
+module.exports = Meal;
