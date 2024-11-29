@@ -5,6 +5,10 @@ const itemSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    itemName: {
+        type: String,
+        required: true
+    },
     mainIngredientAmount: {
         type: String
     },
