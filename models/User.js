@@ -4,11 +4,13 @@ const userSchema = new mongoose.Schema({
     // Pre-registered details by admin
     block: {
         type: String,
+    },
+    userName: {
+        type: String,
         required: true
     },
     flatNo: {
         type: String,
-        required: true
     },
     email: {
         type: String,
@@ -21,7 +23,6 @@ const userSchema = new mongoose.Schema({
     userType: {
         type: String,
         enum: ['owner', 'tenant'],
-        required: true
     },
     name: {
         type: String,

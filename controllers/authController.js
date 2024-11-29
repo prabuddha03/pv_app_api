@@ -69,3 +69,23 @@ exports.verifyAndFetchUser = async (req, res) => {
     }
   };
   
+
+  
+  exports.register = async (req, res) => {
+    try {
+      const { idToken, ...userData } = req.body;
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      
+      const user = new User({
+        firebaseUid: decodedToken.uid,
+        userName: decodedToken.userName,
+        ...userData
+      });
+  
+      await user.save();
+      res.status(201).json({ message: 'User registered successfully' });
+    } catch (error) {
+      console.error('Registration error:', error);
+      res.status(500).json({ error: 'Error registering user' });
+    }
+  };

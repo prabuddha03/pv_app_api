@@ -6,7 +6,7 @@ const adminController = require('../controllers/adminController')
 router.post('/add-user', adminController.addUser);
 
 // User routes
-router.post('/verify', authController.verifyAndFetchUser);
+router.post('/register', authController.register);
 router.post('/complete-onboarding', authController.completeOnboarding);
 
 
