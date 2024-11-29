@@ -5,6 +5,9 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const eventRoutes= require('./routes/eventRoutes');
 const eventDayRoutes = require('./routes/eventDayRoutes');
+const itemRoutes = require('./routes/itemRoutes');
+const mealRoutes = require('./routes/mealRoutes');
+const cartRoutes = require('./routes/foodCartRoutes');
 
 dotenv.config();
 
@@ -19,9 +22,11 @@ app.use(express.json());
 
 // Routes
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/events', eventRoutes);
-app.use('/api/v1/eventDays',eventDayRoutes);
-
+app.use('/api/v1/event', eventRoutes);
+app.use('/api/v1/eventDay',eventDayRoutes);
+app.use('/api/v1/item', itemRoutes);
+app.use('/api/v1/meal', mealRoutes);
+app.use('/api/v1/cart', cartRoutes)
 
 const PORT = process.env.PORT || 3000;
 

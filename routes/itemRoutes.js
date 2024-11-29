@@ -9,3 +9,5 @@ router.get('/:id', itemController.getItem);
 router.patch('/:id', itemController.updateItem);
 
 router.delete('/:id', itemController.deleteItem);
+
+module.exports = router;

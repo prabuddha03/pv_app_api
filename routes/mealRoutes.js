@@ -9,3 +9,5 @@ router.post('/', mealController.createMeal);
 router.get('/:id', mealController.getMeal);
 router.patch('/:id', mealController.updateMeal);
 router.delete('/:id', mealController.deleteMeal);
+
+module.exports = router;
