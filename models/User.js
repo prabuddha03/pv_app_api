@@ -37,7 +37,8 @@ const userSchema = new mongoose.Schema({
     },
     userRole : {
         type: String,
-        enum: ['user','moderator','admin']
+        enum: ['user','moderator','admin'],
+        default: 'user',
     },   
     // Status
     onboarded: {
