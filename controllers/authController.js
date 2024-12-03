@@ -36,7 +36,7 @@ const signToken = (id) =>
     if (user.passCheck) {
       return next(new AppError('User already registered. Please log in.', 403));
     }
-  
+  x
     user.password = password; 
     user.passCheck = true;    
     await user.save();        
@@ -51,7 +51,6 @@ const signToken = (id) =>
     if (!userName || !password) {
       return next(new AppError('Please provide username and password', 400));
     }
-  
     const user = await User.findOne({ userName }).select('+password'); 
   
     if (!user || !(await user.correctPassword(password, user.password))) {
@@ -59,3 +58,19 @@ const signToken = (id) =>
     }
     createSendToken(user, 200, res); 
   });
+
+  exports.onboarding = catchAsync(async(req, res, next)=>{
+    const { id } = req.body;
+    const user = await User.findById(id);
+    if(user.onboarded){
+      return next(new AppError('User already onboarded', 400));
+    }
+    user.onboarded = true;
+    await user.save();
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user,
+      },
+    })
+  })

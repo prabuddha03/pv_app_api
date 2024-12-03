@@ -9,5 +9,7 @@ router.post('/add-user', adminController.addUser);
 router.post('/register', authController.register);
 router.post('/login', authController.login);
 
+router.patch('/onboarding', authController.onboarding);
+
 
 module.exports = router;
