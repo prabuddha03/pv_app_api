@@ -2,7 +2,7 @@ const User = require('../models/User');
 
 exports.addUser = async (req, res) => {
     try {
-        const { block, flatNo, email, contactNo, userType, name } = req.body;
+        const { block, flatNo,userName, contactNo, userType, name } = req.body;
 
         // Check if user already exists
         const existingUser = await User.findOne({ block, flatNo });
@@ -16,7 +16,7 @@ exports.addUser = async (req, res) => {
         const user = new User({
             block,
             flatNo,
-            email,
+            userName,
             name,
             contactNo,
             userType,

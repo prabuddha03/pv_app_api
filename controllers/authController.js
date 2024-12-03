@@ -34,7 +34,7 @@ const signToken = (id) =>
     }
   
     if (user.passCheck) {
-      return next(new AppError('Password already set. Please log in.', 403));
+      return next(new AppError('User already registered. Please log in.', 403));
     }
   
     user.password = password; 
