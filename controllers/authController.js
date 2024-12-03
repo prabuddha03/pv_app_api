@@ -1,91 +1,61 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const admin = require('../config/firebase-config');
+const AppError = require('../utils/appError');
+const catchAsync = require('../utils/catchAsync');
 
-exports.verifyAndFetchUser = async (req, res) => {
-    try {
-      const { idToken } = req.body;
-      
-      const decodedToken = await admin.auth().verifyIdToken(idToken);
-      const phoneNumber = decodedToken.phone_number;
-  
-      if (!phoneNumber) {
-        return res.status(400).json({ 
-          error: 'Phone number not found in Firebase token' 
-        });
-      }
-  
-      // Find user in MongoDB by phone number
-      let user = await User.findOne({ phoneNumber });
-  
-      if (!user) {
-        return res.status(404).json({ 
-          error: 'User not found. Please contact admin to add your details.' 
-        });
-      }
-  
-      // Update Firebase UID if not already set
-      if (!user.firebaseUid) {
-        user.firebaseUid = decodedToken.uid;
-        await user.save();
-      }
-  
-      res.status(200).json({ 
-        message: 'User verified successfully',
+
+const signToken = (id) =>
+  jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+
+  const createSendToken = (user, statusCode, res) => {
+    const token = signToken(user._id);
+    user.password = undefined; 
+    res.status(statusCode).json({
+      status: 'success',
+      token,
+      data: {
         user,
-        isNewUser: !user.isOnboarded
-      });
-    } catch (error) {
-      console.error('Verify user error:', error);
-      res.status(500).json({ error: 'Error verifying user' });
-    }
-  };
-  
-  // Mark user as onboarded
-  exports.completeOnboarding = async (req, res) => {
-    try {
-      const { idToken } = req.body;
-      
-      // Verify Firebase token
-      const decodedToken = await admin.auth().verifyIdToken(idToken);
-      
-      // Update user onboarding status
-      const user = await User.findOneAndUpdate(
-        { firebaseUid: decodedToken.uid },
-        { isOnboarded: true },
-        { new: true }
-      );
-  
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-  
-      res.status(200).json({
-        message: 'Onboarding completed successfully',
-        user
-      });
-    } catch (error) {
-      console.error('Complete onboarding error:', error);
-      res.status(500).json({ error: 'Error completing onboarding' });
-    }
+      },
+    });
   };
   
 
-  
-  exports.register = async (req, res) => {
-    try {
-      const { idToken, ...userData } = req.body;
-      const decodedToken = await admin.auth().verifyIdToken(idToken);
-      
-      const user = new User({
-        firebaseUid: decodedToken.uid,
-        userName: decodedToken.userName,
-        ...userData
-      });
-  
-      await user.save();
-      res.status(201).json({ message: 'User registered successfully' });
-    } catch (error) {
-      console.error('Registration error:', error);
-      res.status(500).json({ error: 'Error registering user' });
+  exports.register = catchAsync(async (req, res, next) => {
+    const { userName, password } = req.body;
+    if (!userName || !password) {
+      return next(new AppError('Please provide username and password', 400));
     }
-  };
+    const user = await User.findOne({ userName });
+
+    if (!user) {
+      return next(new AppError('User not found', 404));
+    }
+  
+    if (user.passCheck) {
+      return next(new AppError('Password already set. Please log in.', 403));
+    }
+  
+    user.password = password; 
+    user.passCheck = true;    
+    await user.save();        
+    createSendToken(user, 200, res); 
+  });
+  
+
+
+  exports.login = catchAsync(async (req, res, next) => {
+    const { userName, password } = req.body;
+  
+    if (!userName || !password) {
+      return next(new AppError('Please provide username and password', 400));
+    }
+  
+    const user = await User.findOne({ userName }).select('+password'); 
+  
+    if (!user || !(await user.correctPassword(password, user.password))) {
+      return next(new AppError('Incorrect username or password', 401));
+    }
+    createSendToken(user, 200, res); 
+  });

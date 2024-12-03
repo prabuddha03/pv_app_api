@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-    // Pre-registered details by admin
     block: {
         type: String,
     },
@@ -11,6 +11,14 @@ const userSchema = new mongoose.Schema({
     },
     flatNo: {
         type: String,
+    },
+    password: {
+        type: String,
+        minlength: 8,
+    },
+    coins:{
+        type: Number,
+        default: 0,
     },
     email: {
         type: String,
@@ -30,29 +38,13 @@ const userSchema = new mongoose.Schema({
     userRole : {
         type: String,
         enum: ['user','moderator','admin']
-    },
-    
-    // Authentication details
-    firebaseUID: {
-        type: String,
-        sparse: true
-    },
-    authType: {
-        type: String,
-        enum: ['phone', 'google', 'facebook', 'apple'],
-        sparse: true
-    },
-    verifiedEmail: {
-        type: String,
-        sparse: true
-    },
-    verifiedPhone: {
-        type: String,
-        sparse: true
-    },
-    
+    },   
     // Status
     onboarded: {
+        type: Boolean,
+        default: false
+    },
+    passCheck: {
         type: Boolean,
         default: false
     },
@@ -63,5 +55,16 @@ const userSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next(); 
+    this.password = await bcrypt.hash(this.password, 12); //salt of 12 rounds
+    next();
+  });
+  
+  userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
+    return await bcrypt.compare(candidatePassword, userPassword);
+  };
+  
 
 module.exports = mongoose.model('User', userSchema);

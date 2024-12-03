@@ -7,7 +7,7 @@ router.post('/add-user', adminController.addUser);
 
 // User routes
 router.post('/register', authController.register);
-router.post('/complete-onboarding', authController.completeOnboarding);
+router.post('/login', authController.login);
 
 
 module.exports = router;
