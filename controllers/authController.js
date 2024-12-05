@@ -36,7 +36,7 @@ const signToken = (id) =>
     if (user.passCheck) {
       return next(new AppError('User already registered. Please log in.', 403));
     }
-  x
+  
     user.password = password; 
     user.passCheck = true;    
     await user.save();        

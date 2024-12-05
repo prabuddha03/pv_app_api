@@ -6,10 +6,6 @@ const eventDaySchema = new mongoose.Schema({
         ref: 'Event',
         required: true
     },
-    date: {
-        type: Date,
-        required: true
-    },
     dayName: {
         type: String
     }
