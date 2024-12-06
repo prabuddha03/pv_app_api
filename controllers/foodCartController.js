@@ -11,9 +11,12 @@ exports.updateCart = factory.updateOne(FoodCart);
 
 exports.createCartForUser = catchAsync(async (req, res, next) => {
         const {userId} = req.body
+        const cart = await FoodCart.findOne({ user: userId });
+        if(cart){
+            next();
+        }
         const newCart = new FoodCart({ user: userId });
         await newCart.save();
-
         next();
 });
 
