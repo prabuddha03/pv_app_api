@@ -84,8 +84,8 @@ exports.decrementItemQuantity = catchAsync(async (req, res, next) => {
         return next(new AppError('Meal not found.', 404));
     }
 
-    if (item.quantity <= 1) {
-        return next(new AppError('Quantity cannot be less than 1. Use remove instead.', 400));
+    if (item.quantity <= 0) {
+        return next(new AppError('Quantity cannot be less than 0. Use remove instead.', 400));
     }
 
     item.quantity -= 1;
