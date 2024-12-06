@@ -10,6 +10,7 @@ router.get('/:id', mealController.getMeal);
 router.patch('/:id', mealController.updateMeal);
 router.delete('/:id', mealController.deleteMeal);
 
-router.post('/get-meal', mealController.getMealByDay)
+router.post('/get-meal-daywise', mealController.getMealByDay)
+router.get('/:mealId/items', mealController.getMealWithItems);//redundant route
 
 module.exports = router;

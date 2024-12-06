@@ -14,7 +14,7 @@ const itemSchema = new mongoose.Schema({
     },
     spiceLevel: {
         type: String,
-        enum: ['mild', 'medium', 'spicy']
+        enum: ['mild', 'medium', 'spicy', 'sweet']
     },
     details: {
         type: String
@@ -22,7 +22,12 @@ const itemSchema = new mongoose.Schema({
     isSpecial: {
         type: Boolean,
         default: false
-    }
+    },
+    itemCategory: {
+        type: String,
+        enum: ['veg', 'non-veg', 'vegan'],
+        required: true
+    },
 }, {
     timestamps: true
 });

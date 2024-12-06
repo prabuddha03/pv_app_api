@@ -14,9 +14,28 @@ exports.getMealByDay = catchAsync(async (req, res, next) => {
     if (!eventDayID) {
         return res.status(400).json({ success: false, message: "dayID is required." });
     }
-    const meal = await Meal.find({ eventDayID });
+    const meal = await Meal.find({ eventDayID }).populate('items').exec();
     res.status(200).json({
          success: true, 
          data: meal 
     });
   });
+
+
+exports.getMealWithItems = catchAsync(async (req, res) => {
+          const { mealId } = req.params;
+          const meal = await Meal.findById(mealId)
+              .populate('items') 
+              .exec();
+  
+          if (!meal) {
+              return res.status(404).json({ message: 'Meal not found' });
+          }
+  
+          res.status(200).json(meal);
+
+          console.error('Error fetching meal with items:', error);
+          res.status(500).json({ message: 'Internal server error' });
+
+  });
+  
