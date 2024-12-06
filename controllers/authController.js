@@ -39,7 +39,7 @@ const signToken = (id) =>
   
     user.password = password; 
     user.passCheck = true;    
-    await user.save();        
+    await user.save();
     createSendToken(user, 200, res); 
   });
   

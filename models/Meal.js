@@ -6,6 +6,10 @@ const mealSchema = new mongoose.Schema({
         ref: 'EventDay',
         required: true
     },
+    mealName:{
+        type: String,
+        required: true
+    },
     mealType: {
         type: String,
         enum: ['breakfast', 'lunch', 'dinner', 'snack'],
