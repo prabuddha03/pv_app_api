@@ -8,7 +8,11 @@ const eventDaySchema = new mongoose.Schema({
     },
     dayName: {
         type: String
-    }
+    },
+    date: {
+        type: Date,
+        required: true
+    },
 }, {
     timestamps: true
 });
