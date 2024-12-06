@@ -13,7 +13,7 @@ exports.createCartForUser = catchAsync(async (req, res, next) => {
         const {userId} = req.body
         const newCart = new FoodCart({ user: userId });
         await newCart.save();
-        console.log('Cart created successfully for user:', userId);
+
         next();
 });
 
