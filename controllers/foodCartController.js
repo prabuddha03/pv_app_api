@@ -11,7 +11,7 @@ exports.updateCart = factory.updateOne(FoodCart);
 
 exports.createCartForUser = catchAsync(async (req, res, next) => {
         const {userId} = req.body
-        const cart = await FoodCart.findOne({ user: userId });
+        const cart = await FoodCart.findOne({ userId });
         if(cart){
             res.status(400).json({
                 status: 'error',
@@ -29,11 +29,11 @@ exports.addItemToCart = catchAsync(async (req, res) => {
         if (!meal) {
             return res.status(404).json({ message: 'Meal not found' });
         }
-        const cart = await FoodCart.findOne({ user: userId });
+        const cart = await FoodCart.findOne({ userId });
         if (!cart) {
-            const newCart = new FoodCart({ user: userId });
+            const newCart = new FoodCart({ userId });
             await newCart.save();
-            const cart = await FoodCart.findOne({ user: userId });
+            const cart = await FoodCart.findOne({ userId });
         }
         const existingItem = cart.cartItems.find(item => item.meal.toString() === mealId);
         if (existingItem) {
@@ -49,7 +49,7 @@ exports.addItemToCart = catchAsync(async (req, res) => {
 exports.incrementItemQuantity = catchAsync(async (req, res, next) => {
 
     const { userId, mealId } = req.body;
-    const cart = await FoodCart.findOne({ user: userId });
+    const cart = await FoodCart.findOne({ userId });
     if (!cart) {
         return next(new AppError('Cart not found for user.', 404));
     }
@@ -73,7 +73,7 @@ exports.incrementItemQuantity = catchAsync(async (req, res, next) => {
 
 exports.decrementItemQuantity = catchAsync(async (req, res, next) => {
     const { userId, mealId } = req.body;
-    const cart = await FoodCart.findOne({ user: userId });
+    const cart = await FoodCart.findOne({ userId });
     if (!cart) {
         return next(new AppError('Cart not found for user.', 404));
     }
@@ -98,7 +98,14 @@ exports.decrementItemQuantity = catchAsync(async (req, res, next) => {
     res.status(200).json({ status: 'success', data: cart });
 });
 
-
+exports.getCartByUser = catchAsync(async (req, res, next) => {
+    const {userId} = req.body
+    const cart = await FoodCart.findOne({ userId });
+    if (!cart) {
+        return next(new AppError('Cart not found for user.', 404));
+    }
+    res.status(200).json({ status: 'success', data: cart });
+});
 
 
 const clearCart = (Model) => catchAsync(async(req, res, next)=>{

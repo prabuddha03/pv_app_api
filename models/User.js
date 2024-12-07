@@ -52,6 +52,10 @@ const userSchema = new mongoose.Schema({
     isPreRegistered: {
         type: Boolean,
         default: true
+    },
+    intoPayment:{
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true
