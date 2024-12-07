@@ -1,0 +1,49 @@
+const mongoose = require('mongoose');
+
+const cartItemSchema = new mongoose.Schema({
+    meal: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Meal',
+        required: true
+    },
+    quantity: {
+        type: Number,
+        required: true,
+        min: 0
+    }
+});
+
+const bookingSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    eventDayId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'EventDay',
+        required: true
+    },
+    cartItems: [cartItemSchema], // Reusing the structure of cart items
+    totalAmount: {
+        type: Number,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ['booked', 'paid', 'cancelled'],
+        default: 'booked'
+    },
+    paymentID: {
+        type: String
+    },
+    isApproved: {
+        type: Boolean,
+        default: false
+    }
+}, {
+    timestamps: true
+});
+
+const FoodBooking = mongoose.model('FoodBooking', bookingSchema);
+module.exports = FoodBooking;

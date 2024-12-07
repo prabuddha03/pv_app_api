@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const mealSchema = new mongoose.Schema({
-    eventDayID: {
+    eventDayId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'EventDay',
         required: true

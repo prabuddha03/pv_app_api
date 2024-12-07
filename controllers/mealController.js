@@ -10,11 +10,11 @@ exports.deleteMeal = factory.deleteOne(Meal);
 exports.getAllMeals = factory.getAll(Meal);
 
 exports.getMealByDay = catchAsync(async (req, res, next) => {
-    const { eventDayID } = req.body || req.params;
-    if (!eventDayID) {
+    const { eventDayId } = req.body || req.params;
+    if (!eventDayId) {
         return res.status(400).json({ success: false, message: "dayID is required." });
     }
-    const meal = await Meal.find({ eventDayID }).populate('items').exec();
+    const meal = await Meal.find({ eventDayId }).populate('items').exec();
     res.status(200).json({
          success: true, 
          data: meal 
