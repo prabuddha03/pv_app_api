@@ -3,8 +3,8 @@ const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
 exports.intoPaymentTrue = catchAsync(async(req, res, next)=>{
-    const { id } = req.body;
-    const user = await User.findById(id);
+    const { userId } = req.body;
+    const user = await User.findById(userId);
     user.intoPayment = true;
     await user.save();
     res.status(200).json({
@@ -16,8 +16,8 @@ exports.intoPaymentTrue = catchAsync(async(req, res, next)=>{
   })
 
   exports.intoPaymentFalse = catchAsync(async(req, res, next)=>{
-    const { id } = req.body;
-    const user = await User.findById(id);
+    const { userId } = req.body;
+    const user = await User.findById(userId);
     user.intoPayment = false;
     await user.save();
     res.status(200).json({
