@@ -67,6 +67,7 @@ const signToken = (id) =>
     }
     user.onboarded = true;
     await user.save();
+    user.password = undefined; 
     res.status(200).json({
       status: 'success',
       data: {
