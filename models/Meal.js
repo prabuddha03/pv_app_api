@@ -6,6 +6,11 @@ const mealSchema = new mongoose.Schema({
         ref: 'EventDay',
         required: true
     },
+    eventId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Event',
+        required: true,
+    },
     mealName:{
         type: String,
         required: true

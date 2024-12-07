@@ -100,7 +100,13 @@ exports.decrementItemQuantity = catchAsync(async (req, res, next) => {
 
 exports.getCartByUser = catchAsync(async (req, res, next) => {
     const {userId} = req.body
-    const cart = await FoodCart.findOne({ userId });
+    const cart = await FoodCart.findOne({ userId }).populate({
+        path: 'cartItems.meal',
+        populate: [
+            { path: 'eventDayId' }, 
+            { path: 'eventId' }     
+        ]
+    });
     if (!cart) {
         return next(new AppError('Cart not found for user.', 404));
     }

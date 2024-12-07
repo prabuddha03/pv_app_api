@@ -5,13 +5,13 @@ const foodBookingController = require('../controllers/foodBookingController')
 
 router.get('/', foodBookingController.getAllFoodBookings);
 router.post('/', foodBookingController.createFoodBooking);
-router.get('/:id', foodBookingController.getFoodBooking );
+router.post('/get-populated-booking', foodBookingController.getBooking );
 
 router.patch('/:id', foodBookingController.updateFoodBooking);
 router.delete('/:id', foodBookingController.deleteFoodBooking);
 
-router.post('/get-booking-by-user', foodBookingController.getFoodBookingByUser);
-router.post('/get-all-booking-by-day', foodBookingController.getFoodBookingByDay);
+router.post('/get-by-user', foodBookingController.getFoodBookingByUser);
+router.post('/get-all-by-day', foodBookingController.getFoodBookingByDay);
 
 router.patch('/approve-booking', foodBookingController.bookingApproval);
 
