@@ -13,7 +13,10 @@ exports.createCartForUser = catchAsync(async (req, res, next) => {
         const {userId} = req.body
         const cart = await FoodCart.findOne({ user: userId });
         if(cart){
-            next();
+            res.status(400).json({
+                status: 'error',
+                message: 'Already cart is created for the user'
+            })
         }
         const newCart = new FoodCart({ user: userId });
         await newCart.save();
