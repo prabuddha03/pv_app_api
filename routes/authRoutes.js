@@ -11,8 +11,7 @@ router.post('/login', authController.login);
 
 router.patch('/onboarding', authController.onboarding);
 
-router.patch('/into-payment-true', authController.intoPaymentTrue);
-router.patch('/into-payment-false', authController.intoPaymentFalse);
+
 
 
 module.exports = router;

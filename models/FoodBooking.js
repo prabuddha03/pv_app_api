@@ -50,5 +50,7 @@ const bookingSchema = new mongoose.Schema({
     timestamps: true
 });
 
+bookingSchema.index({ userId: 1, eventDayId: 1 }, { unique: true });
+
 const FoodBooking = mongoose.model('FoodBooking', bookingSchema);
 module.exports = FoodBooking;
