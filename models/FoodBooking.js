@@ -19,6 +19,11 @@ const bookingSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    eventId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Event',
+        required: true
+    },
     eventDayId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'EventDay',

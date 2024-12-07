@@ -15,8 +15,11 @@ exports.getFoodBookingByUser = catchAsync(async (req, res, next) => {
     }
     const bookingByUser = await FoodBooking.find({ userId })
     res.status(200).json({
-         success: true, 
-         data: bookingByUser,
+        status:'success',
+        results: bookingByUser.length,
+        data:{ 
+            bookingByUser,
+        },
     });
   });
 
@@ -24,8 +27,11 @@ exports.getFoodBookingByDay = catchAsync(async(req, res, next)=>{
     const { eventDayId } = req.body;
     const foodBookingByDay = await FoodBooking.find({ eventDayId });
     res.status(200).json({
-        success: true,
-        data: foodBookingByDay,
+        results: foodBookingByDay.length,
+        status: 'success',
+        data:{
+            foodBookingByDay,
+        }, 
     })
 })
 

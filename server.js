@@ -8,6 +8,7 @@ const eventDayRoutes = require('./routes/eventDayRoutes');
 const itemRoutes = require('./routes/itemRoutes');
 const mealRoutes = require('./routes/mealRoutes');
 const cartRoutes = require('./routes/foodCartRoutes');
+const foodBookingRoutes = require('./routes/foodBookingRoutes');
 
 dotenv.config();
 
@@ -26,7 +27,8 @@ app.use('/api/v1/event', eventRoutes);
 app.use('/api/v1/eventDay',eventDayRoutes);
 app.use('/api/v1/item', itemRoutes);
 app.use('/api/v1/meal', mealRoutes);
-app.use('/api/v1/cart', cartRoutes)
+app.use('/api/v1/cart', cartRoutes);
+app.use('/api/v1/booking', foodBookingRoutes);
 
 const PORT = process.env.PORT || 3000;
 
