@@ -34,6 +34,11 @@ const bookingSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    paymentMethod: {
+        type: String,
+        enum: ['qr', 'neft', 'cash'],
+        default: 'qr'
+    },
     status: {
         type: String,
         enum: ['booked', 'paid', 'cancelled'],
