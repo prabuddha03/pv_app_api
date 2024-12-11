@@ -47,9 +47,10 @@ const bookingSchema = new mongoose.Schema({
     paymentID: {
         type: String
     },
-    isApproved: {
-        type: Boolean,
-        default: false
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'declined', 'modify'],
+        default: 'pending'
     }
 }, {
     timestamps: true
