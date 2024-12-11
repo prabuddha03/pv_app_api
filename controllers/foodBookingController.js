@@ -47,6 +47,27 @@ exports.getFoodBookingByDay = catchAsync(async (req, res, next) => {
   });
 });
 
+
+exports.bookingDecline = catchAsync(async (req, res, next) => {
+  const { bookingId } = req.body;
+  if(!bookingId){
+    return next(new AppError("no booking", 400));
+  }
+  const foodBooking = await FoodBooking.findById(bookingId);
+  if (!foodBooking) {
+    return next(new AppError("No Booking found", 400));
+  }
+  foodBooking.currentState = 'declined'
+  await user.save();
+  res.status(200).json({
+    status: "success",
+    data: {
+      user,
+    },
+  });
+});
+
+
 exports.bookingApproval = catchAsync(async (req, res, next) => {
   const { bookingId } = req.body;
   const foodBooking = await FoodBooking.findById(bookingId);
@@ -62,6 +83,7 @@ exports.bookingApproval = catchAsync(async (req, res, next) => {
     },
   });
 });
+
 
 exports.getBooking = async (req, res, next) => {
   try {

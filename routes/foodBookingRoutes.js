@@ -14,5 +14,6 @@ router.post('/get-by-user', foodBookingController.getFoodBookingByUser);
 router.post('/get-all-by-day', foodBookingController.getFoodBookingByDay);
 
 router.patch('/approve-booking', foodBookingController.bookingApproval);
+router.patch('/decline-booking', foodBookingController.bookingDecline);
 
 module.exports = router;
