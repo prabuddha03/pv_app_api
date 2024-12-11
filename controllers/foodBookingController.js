@@ -48,12 +48,12 @@ exports.getFoodBookingByDay = catchAsync(async (req, res, next) => {
 });
 
 exports.bookingApproval = catchAsync(async (req, res, next) => {
-  const { id } = req.body;
-  const foodBooking = await FoodBooking.findById(id);
+  const { bookingId } = req.body;
+  const foodBooking = await FoodBooking.findById(bookingId);
   if (foodBooking.isApproved) {
     return next(new AppError("Booking already approved", 400));
   }
-  foodBooking.isApproved = true;
+  foodBooking.currentState = 'approved'
   await user.save();
   res.status(200).json({
     status: "success",
