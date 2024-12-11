@@ -34,7 +34,10 @@ exports.getFoodBookingByUser = catchAsync(async (req, res, next) => {
 
 exports.getFoodBookingByDay = catchAsync(async (req, res, next) => {
   const { eventDayId } = req.body;
-  const foodBookingByDay = await FoodBooking.find({ eventDayId });
+  const foodBookingByDay = await FoodBooking.find({ eventDayId }).populate({
+    path: "userId",
+    select: "userName name",
+  });
   res.status(200).json({
     results: foodBookingByDay.length,
     status: "success",
