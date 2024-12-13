@@ -99,7 +99,7 @@ exports.getBooking = async (req, res, next) => {
       })
       .populate({
         path: "eventDayId",
-        select: "dayName",
+        select: "dayName date",
       });
 
     if (!booking) {
