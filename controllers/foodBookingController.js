@@ -1,6 +1,9 @@
 const FoodBooking = require("../models/FoodBooking");
+const mongoose = require('mongoose');
+const Meal = require("../models/Meal");
 const factory = require("./handlerFactory");
 const catchAsync = require("../utils/catchAsync");
+
 
 exports.createFoodBooking = factory.createOne(FoodBooking);
 //exports.getFoodBooking = factory.getOne(FoodBooking);
@@ -46,45 +49,6 @@ exports.getFoodBookingByDay = catchAsync(async (req, res, next) => {
     },
   });
 });
-
-
-exports.bookingDecline = catchAsync(async (req, res, next) => {
-  const { bookingId } = req.body;
-  if(!bookingId){
-    return next(new AppError("no booking", 400));
-  }
-  const foodBooking = await FoodBooking.findById(bookingId);
-  if (!foodBooking) {
-    return next(new AppError("No Booking found", 400));
-  }
-  foodBooking.currentState = 'declined'
-  await user.save();
-  res.status(200).json({
-    status: "success",
-    data: {
-      user,
-    },
-  });
-});
-
-
-exports.bookingApproval = catchAsync(async (req, res, next) => {
-  const { bookingId } = req.body;
-  const foodBooking = await FoodBooking.findById(bookingId);
-  if (foodBooking.isApproved) {
-    return next(new AppError("Booking already approved", 400));
-  }
-  foodBooking.currentState = 'approved'
-  await user.save();
-  res.status(200).json({
-    status: "success",
-    data: {
-      user,
-    },
-  });
-});
-
-
 exports.getBooking = async (req, res, next) => {
   try {
     const { bookingId } = req.body || req.params;
@@ -115,5 +79,137 @@ exports.getBooking = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
+  }
+};
+
+exports.getEventDayBookingDetails = async (req, res) => {
+  try {
+      const { eventDayId } = req.params;
+
+      const eventDayObjectId = new mongoose.Types.ObjectId(eventDayId);
+
+      const bookingAggregation = await FoodBooking.aggregate([
+          // Stage 1: Match bookings for specific event day
+          { 
+              $match: { 
+                  eventDayId: eventDayObjectId 
+              } 
+          },
+
+          // Stage 2: Unwind cart items
+          { 
+              $unwind: {
+                  path: '$cartItems',
+                  preserveNullAndEmptyArrays: false
+              } 
+          },
+
+          // Stage 3: Lookup Meal Details
+          {
+              $lookup: {
+                  from: 'meals', // Verify this matches your actual MongoDB collection name
+                  localField: 'cartItems.meal',
+                  foreignField: '_id',
+                  as: 'mealDetails'
+              }
+          },
+
+          // Stage 4: Unwind Meal Details
+          {
+              $unwind: {
+                  path: '$mealDetails',
+                  preserveNullAndEmptyArrays: false
+              }
+          },
+
+          // Stage 5: Group and Aggregate
+          {
+              $group: {
+                  _id: null,
+                  totalBookings: { $sum: 1 },
+                  totalAmount: { $sum: '$totalAmount' },
+                  mealBreakdown: {
+                      $push: {
+                          mealId: '$cartItems.meal',
+                          mealName: '$mealDetails.mealName',
+                          mealType: '$mealDetails.mealType',
+                          mealCategory: '$mealDetails.mealCategory',
+                          quantity: '$cartItems.quantity',
+                          mealPrice: '$mealDetails.price'
+                      }
+                  }
+              }
+          }
+      ]);
+
+      console.log('Booking Aggregation Raw Result10:', 
+          JSON.stringify(bookingAggregation, null, 2)
+      );
+
+      if (bookingAggregation.length === 0) {
+
+          const bookingCount = await FoodBooking.countDocuments({ 
+              eventDayId: eventDayObjectId 
+          });
+          const sampleBooking = await FoodBooking.findOne({ 
+              eventDayId: eventDayObjectId 
+          }).lean();
+
+          console.log('Booking Count for this EventDay11:', bookingCount);
+          console.log('Sample Booking12:', JSON.stringify(sampleBooking, null, 2));
+
+
+          if (sampleBooking) {
+              const mealIds = sampleBooking.cartItems.map(item => item.meal);
+              console.log("111111:", mealIds)
+              const mealCheck = await Meal.find({ 
+                  _id: { $in: mealIds } 
+              })
+              
+              console.log('Meal Existence Check:', JSON.stringify(mealCheck, null, 2));
+          }
+      }
+
+      const result = bookingAggregation[0] || {
+          totalBookings: 0,
+          totalAmount: 0,
+          mealBreakdown: []
+      };
+
+
+      const mealCategories = {
+          veg: result.mealBreakdown.filter(m => m.mealCategory === 'veg')
+              .reduce((sum, m) => sum + m.quantity, 0),
+          nonVeg: result.mealBreakdown.filter(m => m.mealCategory === 'non-veg')
+              .reduce((sum, m) => sum + m.quantity, 0),
+          vegan: result.mealBreakdown.filter(m => m.mealCategory === 'vegan')
+              .reduce((sum, m) => sum + m.quantity, 0)
+      };
+
+      const mealCountById = result.mealBreakdown.reduce((acc, meal) => {
+          const mealIdString = meal.mealId.toString();
+          acc[mealIdString] = (acc[mealIdString] || 0) + meal.quantity;
+          return acc;
+      }, {});
+
+
+      const response = {
+          totalBookings: result.totalBookings || 0,
+          totalAmount: result.totalAmount || 0,
+          mealCountById,
+          mealCategories,
+          detailedMealBreakdown: result.mealBreakdown || []
+      };
+
+      console.log('Final Response:', JSON.stringify(response, null, 2));
+
+      res.status(200).json(response);
+  } catch (error) {
+      console.error('Comprehensive Error in Booking Details:', error);
+      res.status(500).json({ 
+          message: 'Detailed Error Fetching Booking Details', 
+          error: error.message,
+          stack: error.stack
+      });
   }
 };

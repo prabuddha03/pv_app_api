@@ -13,7 +13,8 @@ router.delete('/:id', foodBookingController.deleteFoodBooking);
 router.post('/get-by-user', foodBookingController.getFoodBookingByUser);
 router.post('/get-all-by-day', foodBookingController.getFoodBookingByDay);
 
-router.patch('/approve-booking', foodBookingController.bookingApproval);
-router.patch('/decline-booking', foodBookingController.bookingDecline);
+
+router.get('/event-day/:eventDayId/booking-details', foodBookingController.getEventDayBookingDetails);
+
 
 module.exports = router;
