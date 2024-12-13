@@ -91,7 +91,7 @@ exports.getBooking = async (req, res, next) => {
     const booking = await FoodBooking.findById(bookingId)
       .populate({
         path: "userId",
-        select: "userName",
+        select: "userName name",
       })
       .populate({
         path: "eventId",
