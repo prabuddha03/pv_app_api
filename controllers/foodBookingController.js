@@ -64,6 +64,10 @@ exports.getBooking = async (req, res, next) => {
       .populate({
         path: "eventDayId",
         select: "dayName date",
+      })
+      .populate({
+        path: "cartItems.meal",
+        select: "mealName price",
       });
 
     if (!booking) {
