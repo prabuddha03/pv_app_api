@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
     },
     userName: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
     },
     flatNo: {
         type: String,

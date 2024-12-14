@@ -8,4 +8,6 @@ router.patch('/into-payment-false', userController.intoPaymentFalse);
 
 router.get('/me/:id', userController.getUser);
 
+router.post('/me/by-user-name', userController.getUserByUserName)
+
 module.exports = router;
