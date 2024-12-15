@@ -82,10 +82,10 @@ exports.getOne = (Model) =>
         const sortBy = req.query.sort.split(',').join(' ');
         query = query.sort(sortBy);
       } else {
-        query = query.sort('-createdAt'); // Default sorting by creation date
+        query = query.sort('-createdAt');
       }
   
-      // Pagination (e.g., ?page=1&limit=10)
+      // Pagination ?page=1&limit=10)
       const page = parseInt(req.query.page, 10) || 1;
       const limit = parseInt(req.query.limit, 10) || 10;
       const skip = (page - 1) * limit;

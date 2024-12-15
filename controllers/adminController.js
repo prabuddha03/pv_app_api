@@ -4,7 +4,7 @@ exports.addUser = async (req, res) => {
     try {
         const { block, flatNo,userName, contactNo, userType, name } = req.body;
 
-        // Check if user already exists
+
         const existingUser = await User.findOne({ block, flatNo });
         if (existingUser) {
             return res.status(400).json({
@@ -12,7 +12,7 @@ exports.addUser = async (req, res) => {
                 message: 'User already exists for this flat'
             });
         }
-        // Create new user
+
         const user = new User({
             block,
             flatNo,

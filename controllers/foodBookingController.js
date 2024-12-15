@@ -180,7 +180,6 @@ exports.getEventDayBookingDetails = async (req, res) => {
           mealBreakdown: []
       };
 
-
       const mealCategories = {
           veg: result.mealBreakdown.filter(m => m.mealCategory === 'veg')
               .reduce((sum, m) => sum + m.quantity, 0),
