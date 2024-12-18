@@ -44,7 +44,7 @@ const bookingSchema = new mongoose.Schema({
         enum: ['booked', 'paid', 'cancelled'],
         default: 'booked'
     },
-    paymentID: {
+    paymentId: {
         type: String
     },
     currentState: {
