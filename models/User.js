@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
         sparse: true
     },
     contactNo: {
-        type: Number,
+        type: String,
         sparse: true
     },
     userType: {

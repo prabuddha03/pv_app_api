@@ -37,10 +37,15 @@ exports.getFoodBookingByUser = catchAsync(async (req, res, next) => {
 
 exports.getFoodBookingByDay = catchAsync(async (req, res, next) => {
   const { eventDayId } = req.body;
+  console.log(eventDayId);
   const foodBookingByDay = await FoodBooking.find({ eventDayId }).populate({
     path: "userId",
-    select: "userName name",
-  });
+    select: "userName name flatNo block",
+  }).populate({
+    path: "cartItems.meal",
+    select: "mealName mealCategory"
+  })
+  console.log("Populated foodBookingByDay:", foodBookingByDay);
   res.status(200).json({
     results: foodBookingByDay.length,
     status: "success",
@@ -96,7 +101,8 @@ exports.getEventDayBookingDetails = async (req, res) => {
           // Stage 1: Match bookings for specific event day
           { 
               $match: { 
-                  eventDayId: eventDayObjectId 
+                  eventDayId: eventDayObjectId ,
+                  currentState: "approved"
               } 
           },
 
