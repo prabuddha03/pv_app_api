@@ -3,30 +3,36 @@ name: Deploy to AWS EC2
 on:
   push:
     branches:
-      - main  # Adjust to the branch you deploy from
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Copy Files to EC2
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        source: "./"
-        target: "/home/ec2-user/pv_app_api"
+      - name: Add SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-    - name: Install Dependencies and Restart App
-      run: |
-        ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
-        cd /home/ec2-user/pv_app_api
-        git pull
-        npm install
-        pm2 restart app.js -i 0 || pm2 start app.js -i 0
-        EOF
+      - name: Copy Files to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ~/.ssh/id_rsa
+          source: "./"
+          target: "/home/ec2-user/pv_app_api"
+
+      - name: Install Dependencies and Restart App
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+          cd /home/ec2-user/pv_app_api
+          git pull
+          npm install
+          pm2 restart app.js -i 0 || pm2 start app.js -i 0
+          EOF
