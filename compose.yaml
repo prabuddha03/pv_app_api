@@ -1,0 +1,21 @@
+services:
+  backend:
+    build: .
+    container_name: pv-api
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    develop:
+      watch:
+        - action: sync
+          path: ./
+          target: /src/app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: .
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: always
