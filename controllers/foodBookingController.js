@@ -131,13 +131,13 @@ exports.getEventDayBookingDetails = async (req, res) => {
                   preserveNullAndEmptyArrays: false
               }
           },
-
+          
           // Stage 5: Group and Aggregate
           {
               $group: {
                   _id: null,
-                  totalBookings: { $sum: 1 },
-                  totalAmount: { $sum: '$totalAmount' },
+                  totalBookings: { $sum: '$cartItems.quantity' },
+                  totalAmount: { $sum: { $multiply: ['$cartItems.quantity', '$mealDetails.price'] } },
                   mealBreakdown: {
                       $push: {
                           mealId: '$cartItems.meal',
