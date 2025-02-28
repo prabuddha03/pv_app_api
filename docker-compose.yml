@@ -4,10 +4,10 @@ services:
   app:
     build: .
     ports:
-      - "3001:3000"
+      - "3001:8080"
     environment:
       - NODE_ENV=development
-      - PORT=3000
+      - PORT=8080
     env_file:
       - .env
     volumes:
