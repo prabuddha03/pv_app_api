@@ -16,8 +16,9 @@ COPY . .
 # Expose port
 EXPOSE 8080
 
-# Set the PORT environment variable
+# Set environment variables
 ENV PORT=8080
+ENV NODE_ENV=production
 
-# Start the application
-CMD ["npm", "start"] 
+# Add debugging to startup
+CMD ["sh", "-c", "echo 'Starting server on port $PORT' && npm start"] 
